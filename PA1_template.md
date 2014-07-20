@@ -1,7 +1,22 @@
 # Reproducible Research: Peer Assessment 1
 
+From the README, we include a review of the data set.   
+
+The variables in this dataset are:  
+- **steps**: Number of steps taking in a 5-minute interval (missing
+    values are coded as `NA`)  
+- **date**: The date on which the measurement was taken in YYYY-MM-DD
+    format  
+- **interval**: Identifier for the 5-minute interval in which
+    measurement was taken  
+
+The dataset is stored in a comma-separated-value (CSV) file and there
+are a total of 17,568 observations in this
+dataset.
 
 ## Loading and preprocessing the data
+
+The working directory is set to that which contains the data file, and the data is read into the data frame **act**. We use the *str* command to get a brief view of the data as a whole and based on that output we use *summary* to get an overview of the **steps** data. 
 
 
 ```r
@@ -25,6 +40,7 @@ summary(act$steps)
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
 ##     0.0     0.0     0.0    37.4    12.0   806.0    2304
 ```
+We count the missing data to insure that only **steps** has missing values.
 
 ```r
 sum(is.na(act))
@@ -33,14 +49,7 @@ sum(is.na(act))
 ```
 ## [1] 2304
 ```
-
-```r
-sum(is.na(act$steps))
-```
-
-```
-## [1] 2304
-```
+We complete the premliminary processing by removing the NA values. As we will want to use the orignial data frame **act** later in the analysis, we construct a new data frame **act.nona**. We call *str* on the new data frame and check to see that sum of the number of observations in **act.nona** and the number of NAs sum to the number of observations in the **act** data frame. We also check to insure that **act.nona** does not contain any NAs.
 
 ```r
 act.nona <- na.omit(act)
@@ -66,6 +75,11 @@ sum(is.na(act.nona))
 
 ## What is mean total number of steps taken per day?
 
+Note that in **act** and **act.nona** a day's data is collected into 288 5 minute intervals which are represented by a sequence of *int's* from 0 to 2350. Each number in this sequence corresponds to an hour and a minute based on a 24 hour clock, i.e., 2355 denotes 5 minutes to midnight.
+
+In order to compute the mean of the steps on per day basis, we use the *aggregate* function.  The *aggregate* function returns a data frame **act.day** containing two observations. One is a factor of the days in the study; the other is the sum of the steps for that day. We look at *str* and *summary* for **act.day**. 
+
+Using the base plotting system, we construct a histogram where the number of steps appears on the x-axis and the frequency of the steps along the y-axis. 
 
 ```r
 act.day <- aggregate(act.nona$steps, by=list(act.nona$date),FUN=sum)
@@ -91,7 +105,9 @@ summary(act.day$x)
 hist(act.day$x,xlab="Steps",main= "Number of Steps Summed by Day")
 ```
 
-![plot of chunk unnamed-chunk-2](./PA1_template_files/figure-html/unnamed-chunk-2.png) 
+![plot of chunk unnamed-chunk-4](./PA1_template_files/figure-html/unnamed-chunk-4.png) 
+
+The mean of the total number of steps taken per day is
 
 ```r
 mean(act.day$x)
@@ -100,6 +116,7 @@ mean(act.day$x)
 ```
 ## [1] 10766
 ```
+and the median of the total number of steps taken per day is
 
 ```r
 median(act.day$x)
@@ -110,6 +127,8 @@ median(act.day$x)
 ```
 
 ## What is the average daily activity pattern?
+
+In order to make a time series plot of the 5 minute interval which averages of the number of steps taken in that 5 minute interval over the days in the study, we again use the *aggregate* function. In this instance we aggregate the steps on the intervals. The resulting data frame is **act.avg** and is summarized by a call to *str*. We add an interval column to aid in ploting. The base plotting system is used.
 
 ```r
 act.avg <- aggregate(act.nona$steps, by=list(as.factor(act.nona$interval)),mean)
@@ -128,13 +147,15 @@ par(mfrow = c(1,1))
 plot(act.avg$interval,act.avg$x, type="l",xlab="Number of Steps",ylab="Average Number of Steps")
 ```
 
-![plot of chunk unnamed-chunk-3](./PA1_template_files/figure-html/unnamed-chunk-3.png) 
+![plot of chunk unnamed-chunk-7](./PA1_template_files/figure-html/unnamed-chunk-7.png) 
 
 ## Imputing missing values
 
 For each interval with a missing value a new value will be imputed by taking the 
-average over all non-missing values for that interval.  This is accomplished though
-the following function.
+average over all non-missing values for that interval. For example, for the zeroth time interval, we compute the mean for the zeroth time interval for all days. Note that as we are using the original data fram **act** which does contain NAs those intervals will be excluded in computing the mean.
+
+This is accomplished though the following function, *imput* which takes a data frame with NAs and returns a data frame where the NAs have been replaced by the imputed values.
+
 
 ```r
 imput <- function(active) {
@@ -153,6 +174,8 @@ imput <- function(active) {
         return(active)
 }
 ```
+
+We do a quick check of the imputed data frame **act.imput** to insure that all NAs have been removed and then look at the output from the calls to *str* on **act.imput** and *summary* on **steps**.
 
 
 ```r
@@ -184,7 +207,7 @@ summary(act.imput$steps)
 ##     0.0     0.0     0.0    37.4    27.0   806.0
 ```
 
-And computing the mean and median:
+Again we use the *aggregate* function to compute the number of steps taken per day. The resulting data frame **act.imput.day** is used to contruct a histogram and to compute the mean and median.  The base plotting system is used.
 
 
 ```r
@@ -192,9 +215,9 @@ act.imput.day <- aggregate(act.imput$steps,by=list(act.imput$date),FUN=sum)
 hist(act.imput.day$x,xlab="Steps",main= "Number of Steps Summed by Day")
 ```
 
-![plot of chunk unnamed-chunk-6](./PA1_template_files/figure-html/unnamed-chunk-6.png) 
+![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
 
-The mean is:
+The mean of the total number of steps taken per day is:
 
 
 ```r
@@ -205,7 +228,7 @@ mean(act.imput.day$x)
 ## [1] 10766
 ```
 
-And the median is:
+And the median of the total number of steps taken per day is:
 
 
 ```r
@@ -217,6 +240,17 @@ median(act.imput.day$x)
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+In order to view any differences in activity patterns between weekdays and weekends, we must separate weekday data from weekend data. We do this in the following steps using the **act.imput** data frame:  
+
+1. call strptime on the **date** data;
+2. use *weekdays* to construct a list of weekday names associated with each date;
+3. construct a logical vector that is *TRUE* for a weekend and *FALSE* otherwise;
+4. Add a field *dayofweek* to **act.imput** that will be used to denote whether a day is a week day or a day on the weekend (Thanks to Richard McAnay for posting this idea to the discussion list)
+5. Two futher data frames are constructed,**act.weekday** and **act.weekend**;
+6. The function *aggregate* is call on each of **act.weekday** and ** act.weekend** to calculate the mean for each interval.
+7. An additional field is added to **act.weekday** and **act.weekend** to aid in plotting.
+8. Weekend and weekday activities are then plotted separately using the base plotting system.
 
 
 ```r
@@ -266,4 +300,6 @@ plot(act.wkendpat$interval, act.wkendpat$x,type="l", main="Weekend",xlab="Interv
 plot(act.wkdaypat$interval, act.wkdaypat$x, type="l",main="Weekday",xlab="Interval",ylab="Steps")
 ```
 
-![plot of chunk unnamed-chunk-9](./PA1_template_files/figure-html/unnamed-chunk-9.png) 
+![plot of chunk unnamed-chunk-13](./PA1_template_files/figure-html/unnamed-chunk-13.png) 
+
+As this data was collected during October and November, we see that activity is a bit higher in the afternoon on the weekends than during the week.
