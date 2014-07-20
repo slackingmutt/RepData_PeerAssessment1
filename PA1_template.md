@@ -20,6 +20,7 @@ The working directory is set to that which contains the data file, and the data 
 
 
 ```r
+library(lattice)
 setwd("~/Git/datascience/RepData_PeerAssessment1")
 act <- read.csv("./activity.csv")
 str(act)
@@ -292,14 +293,16 @@ sum(act.imput$dayofweek == "weekend")
 act.wkdaypat <- aggregate(act.weekday$steps, by=list(as.factor(act.weekday$interval)),
                           mean)
 act.wkdaypat$interval <- act.imput$interval[0:288]
+act.wkdaypat$dayofweek <- "weekday"
 act.wkendpat <- aggregate(act.weekend$steps, by=list(as.factor(act.weekend$interval)),
                           mean)
 act.wkendpat$interval <- act.imput$interval[0:288]
-par(mfrow = c(2,1))
-plot(act.wkendpat$interval, act.wkendpat$x,type="l", main="Weekend",xlab="Interval",ylab ="Steps")
-plot(act.wkdaypat$interval, act.wkdaypat$x, type="l",main="Weekday",xlab="Interval",ylab="Steps")
+act.wkendpat$dayofweek <- "weekend"
+act.days <- rbind(act.wkdaypat,act.wkendpat)
+tplot <- xyplot(x~interval|dayofweek,data=act.days,type="l",layout=c(1,2),ylab="steps")
+print(tplot)
 ```
 
 ![plot of chunk unnamed-chunk-13](./PA1_template_files/figure-html/unnamed-chunk-13.png) 
 
-As this data was collected during October and November, we see that activity is a bit higher in the afternoon on the weekends than during the week.
+As this data was collected during October and November, we see that activity is a bit lower in the afternoon on the weekends when the Seahawks are on TV.
