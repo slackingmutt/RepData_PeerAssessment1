@@ -150,6 +150,16 @@ plot(act.avg$interval,act.avg$x, type="l",xlab="Number of Steps",ylab="Average N
 
 ![plot of chunk unnamed-chunk-7](./PA1_template_files/figure-html/unnamed-chunk-7.png) 
 
+
+The 5 minute interval which contains the maximum number of steps is:
+
+```r
+which(act.avg$x == max(act.avg$x))
+```
+
+```
+## [1] 104
+```
 ## Imputing missing values
 
 For each interval with a missing value a new value will be imputed by taking the 
@@ -216,7 +226,7 @@ act.imput.day <- aggregate(act.imput$steps,by=list(act.imput$date),FUN=sum)
 hist(act.imput.day$x,xlab="Steps",main= "Number of Steps Summed by Day")
 ```
 
-![plot of chunk unnamed-chunk-10](./PA1_template_files/figure-html/unnamed-chunk-10.png) 
+![plot of chunk unnamed-chunk-11](./PA1_template_files/figure-html/unnamed-chunk-11.png) 
 
 The mean of the total number of steps taken per day is:
 
@@ -303,6 +313,6 @@ tplot <- xyplot(x~interval|dayofweek,data=act.days,type="l",layout=c(1,2),ylab="
 print(tplot)
 ```
 
-![plot of chunk unnamed-chunk-13](./PA1_template_files/figure-html/unnamed-chunk-13.png) 
+![plot of chunk unnamed-chunk-14](./PA1_template_files/figure-html/unnamed-chunk-14.png) 
 
 As this data was collected during October and November, we see that activity is a bit lower in the afternoon on the weekends when the Seahawks are on TV.

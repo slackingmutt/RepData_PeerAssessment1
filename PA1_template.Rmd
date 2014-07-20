@@ -75,6 +75,11 @@ par(mfrow = c(1,1))
 plot(act.avg$interval,act.avg$x, type="l",xlab="Number of Steps",ylab="Average Number of Steps")
 ```
 
+
+The 5 minute interval which contains the maximum number of steps is:
+```{r}
+which(act.avg$x == max(act.avg$x))
+```
 ## Imputing missing values
 
 For each interval with a missing value a new value will be imputed by taking the 
