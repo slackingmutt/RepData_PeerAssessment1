@@ -140,7 +140,7 @@ In order to view any differences in activity patterns between weekdays and weeke
 5. Two futher data frames are constructed,**act.weekday** and **act.weekend**;
 6. The function *aggregate* is call on each of **act.weekday** and ** act.weekend** to calculate the mean for each interval.
 7. An additional field is added to **act.weekday** and **act.weekend** to aid in plotting.
-8. Weekend and weekday activities are then plotted separately using the base plotting system.
+8. Weekend and weekday activities are then combined and plotted using the lattice plotting system.
 
 ```{r}
 date <- strptime(act.imput$date,"%Y-%m-%d")

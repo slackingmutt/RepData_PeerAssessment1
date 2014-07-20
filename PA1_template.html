@@ -175,7 +175,7 @@ hist(act.imput.day$x,xlab=&quot;Steps&quot;,main= &quot;Number of Steps Summed b
 <li>Two futher data frames are constructed,<strong>act.weekday</strong> and <strong>act.weekend</strong>;</li>
 <li>The function <em>aggregate</em> is call on each of <strong>act.weekday</strong> and ** act.weekend** to calculate the mean for each interval.</li>
 <li>An additional field is added to <strong>act.weekday</strong> and <strong>act.weekend</strong> to aid in plotting.</li>
-<li>Weekend and weekday activities are then plotted separately using the base plotting system.</li>
+<li>Weekend and weekday activities are then combined and plotted using the lattice plotting system.</li>
 </ol>
 <pre class="r"><code>date &lt;- strptime(act.imput$date,&quot;%Y-%m-%d&quot;)
 daysofweek &lt;- weekdays(date)
